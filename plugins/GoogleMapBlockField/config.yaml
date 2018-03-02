@@ -1,0 +1,15 @@
+id: GoogleMapBlockField
+name: GoogleMapBlockField
+version: 1.0
+author_link: https://www.anothersky.pw/
+author_name: Hideki Abe
+description: <MT_TRANS phrase="Add GoogleMap block field.">
+
+callbacks:
+  MT::App::CMS::template_param.edit_content_data: $GoogleMapBlockField::GoogleMapBlockField::App::_add_js_css
+
+blockeditor_fields: 
+  googlemap:
+    label: 'GoogleMap'
+    order: 50
+    path: "mt-static/plugins/GoogleMapBlockField/js/googlemap.js"
