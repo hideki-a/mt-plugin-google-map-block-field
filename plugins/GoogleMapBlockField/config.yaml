@@ -5,8 +5,18 @@ author_link: https://www.anothersky.pw/
 author_name: Hideki Abe
 description: <MT_TRANS phrase="Add GoogleMap block field.">
 
+system_config_template: cms/settings.tmpl
+settings:
+  google_api_key:
+    default:
+    scope: system
+
 callbacks:
   MT::App::CMS::template_param.edit_content_data: $GoogleMapBlockField::GoogleMapBlockField::App::_add_js_css
+
+tags:
+  function:
+    GoogleMapsBlockFieldAPIKey: $GoogleMapBlockField::GoogleMapBlockField::Tags::_hdlr_google_api_key
 
 blockeditor_fields: 
   googlemap:
