@@ -14,8 +14,10 @@
     };
     $.extend(BEF.GoogleMap.prototype, BEF.prototype, {
         options: {},
+        map: null,
+        marker: null,
         get_id: function () {
-            return self.id;
+            return this.id;
         },
         get_type: function () {
             return 'googlemap';
@@ -37,25 +39,43 @@
                 mappingPoint = { lat: 35.681167, lng: 139.767052 };
             }
 
-            const map = new google.maps.Map($map[0], {
+            self.map = new google.maps.Map($map[0], {
                 zoom: json ? parseInt(json["zoom"]) : 10,
                 center: mappingPoint,
             });
-            const marker = new google.maps.Marker({
+            self.marker = new google.maps.Marker({
                 position: mappingPoint,
-                map: map,
+                map: self.map,
                 draggable: true,
             });
 
-            marker.addListener('dragend', function() {
-                const point = marker.getPosition();
+            self.marker.addListener('dragend', function() {
+                const point = self.marker.getPosition();
                 $("#" + id + " input.lat").val(parseFloat(point.lat()));
                 $("#" + id + " input.lng").val(parseFloat(point.lng()));
-                $("#" + id + " input.zoom").val(parseInt(map.zoom));
-                map.setCenter(marker.getPosition());
+                $("#" + id + " input.zoom").val(parseInt(self.map.zoom));
+                self.map.setCenter(self.marker.getPosition());
             });
-            map.addListener('zoom_changed', function() {
-                $("#" + id + " input.zoom").val(parseInt(map.zoom));
+            self.map.addListener('zoom_changed', function() {
+                $("#" + id + " input.zoom").val(parseInt(self.map.zoom));
+            });
+        },
+        _geocoder: function () {
+            const self = this;
+            const id = self.id;
+            const address = $('#' + id + '_address').val();
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status === 'OK') {
+                    const point = results[0].geometry.location;
+                    self.map.setCenter(point);
+                    self.marker.setPosition(point);
+                    $("#" + id + " input.lat").val(parseFloat(point.lat()));
+                    $("#" + id + " input.lng").val(parseFloat(point.lng()));
+                    $("#" + id + " input.zoom").val(self.map.zoom);
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
             });
         },
         create: function (id, data) {
@@ -75,7 +95,7 @@
             self.edit_field = $(fieldHTML.join(''));
             self.mapArea = $('<div class="form-group"></div>');
             self.mapArea.append($map);
-            self.searchByAddress = $('<div class="form-group"><input type="text" class="address" /><input type="button" value="住所から検索" /></div>');
+            self.searchByAddress = $('<div class="form-group"><input type="text" name="' + id + '_address" id="' + id + '_address" class="address" /><input type="button" id="'+ id + '_address_search" value="住所から検索" /></div>');
 
             if (data["value"]) {
                 json = JSON.parse(data["value"]);
@@ -88,6 +108,7 @@
             self.edit_field.find('.col').append(self.searchByAddress);
 
             self._mapInit($map, json);
+            $(document).on('click', '#' + id + '_address_search', $.proxy(self._geocoder, self));
 
             return self.edit_field;
         },
