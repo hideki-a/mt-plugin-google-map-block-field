@@ -66,9 +66,9 @@
             const fieldHTML = [
                 '<div class="row no-gutters py-2"><div class="col"></div>',
                 '<dl id="' + id + '">',
-                '<dt>緯度</dt><dd><input type="text" class="lat" /></dd>',
-                '<dt>経度</dt><dd><input type="text" class="lng" /></dd>',
-                '<dt>ズームレベル</dt><dd><input type="text" class="zoom" /></dd>',
+                '<dt>緯度</dt><dd><input type="text" name="' + id + '_lat" mt:watch-change="1" class="lat" /></dd>',
+                '<dt>経度</dt><dd><input type="text" name="' + id + '_lng" mt:watch-change="1" class="lng" /></dd>',
+                '<dt>ズームレベル</dt><dd><input type="text" name="' + id + '_zoom" mt:watch-change="1" class="zoom" /></dd>',
                 '</dl></div>',
             ];
             self.id = id;
