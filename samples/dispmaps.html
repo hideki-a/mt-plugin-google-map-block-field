@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>Google Maps Loading Sample</title>
+	<style>
+    .googleMap {
+      margin-bottom: 20px;
+      width: 80%;
+      height: 400px;
+    }
+	</style>
+</head>
+<body>
+  <h1>Google Maps Loading Sample</h1>
+
+  <!-- コンテンツフィールドから出力したデータ -->
+  <mt-googlemap>{"lat":"35.799216904141666","lng":"139.47157985491947","zoom":"15"}</mt-googlemap>
+  <mt-googlemap>{"lat":"33.852055","lng":"132.78639599999997","zoom":"17"}</mt-googlemap>
+
+  <!-- マップの表示処理 -->
+  <script>
+    const maps = [];
+
+    function _dispMap() {
+      maps.forEach(function (map) {
+        const originalElem = map.original;
+        const mapElem = map.mapElem;
+        originalElem.parentNode.replaceChild(mapElem, originalElem);
+      });
+    }
+
+    function initMap() {
+      const elems = document.getElementsByTagName('mt-googlemap');
+      Array.from(elems, function (elem) {
+        const data = JSON.parse(elem.innerText);
+        const mappingPoint = {
+          lat: parseFloat(data.lat),
+          lng: parseFloat(data.lng),
+        };
+        const mapElem = document.createElement('div');
+        const map = new google.maps.Map(mapElem, {
+          zoom: parseInt(data.zoom),
+          center: mappingPoint,
+        });
+        const marker = new google.maps.Marker({
+          position: mappingPoint,
+          map: map,
+        });
+        mapElem.classList.add('googleMap');
+        maps.push({ original: elem, mapElem: mapElem });
+      });
+
+      _dispMap();
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+</body>
+</html>
