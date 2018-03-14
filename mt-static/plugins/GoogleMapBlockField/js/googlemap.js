@@ -2,16 +2,15 @@
 
     // ひとまずheader.jsを基に作成
     var BEF = MT.BlockEditorField;
-    var label = trans('googlemap');
+    var label = trans('GoogleMap');
 
-    BEF.GoogleMap = function () {
-        BEF.apply(this, arguments)
-        BEF.GoogleMap.label = 'googlemap';
-        BEF.GoogleMap.svg_name = 'ic_map';
-    };
-    BEF.GoogleMap.create_button = function () {
-        return $('<div class="add"><div class="mt-icon--contentblock"><svg title="' + label + '" role="img" class="mt-icon mt-icon--sm"><use xlink:href="' + StaticURI + 'plugins/GoogleMapBlockField/images/sprite.svg#ic_map"></use></svg></div><label>' + label + '</label></div>');
-    };
+    BEF.GoogleMap = function () { BEF.apply(this, arguments) };
+    $.extend(BEF.GoogleMap, {
+        label: trans('GoogleMap'),
+        create_button: function () {
+            return $('<button type="button" class="btn btn-contentblock"><svg title="' + label + '" role="img" class="mt-icon"><use xlink:href="' + StaticURI + 'plugins/GoogleMapBlockField/images/sprite.svg#ic_map"></use></svg>' + label + '</button>');
+        },
+    });
     $.extend(BEF.GoogleMap.prototype, BEF.prototype, {
         options: {},
         map: null,
