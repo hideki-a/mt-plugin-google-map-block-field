@@ -22,4 +22,4 @@ blockeditor_fields:
   googlemap:
     label: 'GoogleMap'
     order: 50
-    path: "mt-static/plugins/GoogleMapBlockField/js/googlemap.js"
+    path: "plugins/GoogleMapBlockField/js/googlemap.js"
