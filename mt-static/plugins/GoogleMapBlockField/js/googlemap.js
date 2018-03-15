@@ -33,13 +33,13 @@
             let mappingPoint;
 
             if (json) {
-                mappingPoint = { lat: parseFloat(json["lat"]), lng: parseFloat(json["lng"]) };
+                mappingPoint = { lat: parseFloat(json.lat), lng: parseFloat(json.lng) };
             } else {
                 mappingPoint = { lat: 35.681167, lng: 139.767052 };
             }
 
             self.map = new google.maps.Map($map[0], {
-                zoom: json ? parseInt(json["zoom"]) : 10,
+                zoom: json ? parseInt(json.zoom) : 10,
                 center: mappingPoint,
             });
             self.marker = new google.maps.Marker({
@@ -96,11 +96,11 @@
             self.mapArea.append($map);
             self.searchByAddress = $('<div class="form-group"><input type="text" name="' + id + '_address" id="' + id + '_address" class="address" /><input type="button" id="'+ id + '_address_search" value="住所から検索" /></div>');
 
-            if (data["value"]) {
-                json = JSON.parse(data["value"]);
-                self.edit_field.find("#" + id + " input.lat").val(parseFloat(json["lat"]));
-                self.edit_field.find("#" + id + " input.lng").val(parseFloat(json["lng"]));
-                self.edit_field.find("#" + id + " input.zoom").val(parseInt(json["zoom"]));
+            if (data.value) {
+                json = JSON.parse(data.value);
+                self.edit_field.find("#" + id + " input.lat").val(parseFloat(json.lat));
+                self.edit_field.find("#" + id + " input.lng").val(parseFloat(json.lng));
+                self.edit_field.find("#" + id + " input.zoom").val(parseInt(json.zoom));
             }
 
             self.edit_field.find('.col').append(self.mapArea);
