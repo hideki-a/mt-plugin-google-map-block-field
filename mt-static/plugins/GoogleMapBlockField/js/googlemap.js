@@ -84,17 +84,17 @@
 
             const fieldHTML = [
                 '<div class="row no-gutters py-2"><div class="col"></div>',
-                '<dl id="' + id + '">',
-                '<dt>緯度</dt><dd><input type="text" name="' + id + '_lat" mt:watch-change="1" class="lat" /></dd>',
-                '<dt>経度</dt><dd><input type="text" name="' + id + '_lng" mt:watch-change="1" class="lng" /></dd>',
-                '<dt>ズームレベル</dt><dd><input type="text" name="' + id + '_zoom" mt:watch-change="1" class="zoom" /></dd>',
-                '</dl></div>',
+                '<div id="' + id + '">',
+                '<div class="form-group"><label for="' + id + '_lat">緯度</label><input type="text" name="' + id + '_lat" id="' + id + '_lat" mt:watch-change="1" class="lat form-control" /></div>',
+                '<div class="form-group"><label for="' + id + '_lng">経度</label><input type="text" name="' + id + '_lng" id="' + id + '_lng" mt:watch-change="1" class="lng form-control" /></div>',
+                '<div class="form-group"><label for="' + id + '_zoom">ズームレベル</label><input type="text" name="' + id + '_zoom" id="' + id + '_zoom" mt:watch-change="1" class="zoom form-control" /></div>',
+                '</div>',
             ];
             self.id = id;
             self.edit_field = $(fieldHTML.join(''));
             self.mapArea = $('<div class="form-group"></div>');
             self.mapArea.append($map);
-            self.searchByAddress = $('<div class="form-group"><input type="text" name="' + id + '_address" id="' + id + '_address" class="address" /><input type="button" id="'+ id + '_address_search" value="住所から検索" /></div>');
+            self.searchByAddress = $('<div class="form-group"><label for="' + id + '_address">ジオコーディング</label><input type="text" name="' + id + '_address" id="' + id + '_address" class="address form-control w-50 mb-2" /><input type="button" id="'+ id + '_address_search" value="住所から検索" /></div>');
 
             if (data.value) {
                 json = JSON.parse(data.value);
