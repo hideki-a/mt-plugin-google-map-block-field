@@ -1,6 +1,6 @@
 # GoogleMapBlockField
 
-Movable Type 7のBlockEditor（ブロックエディタ）にフィールド（フォーマット）「GoogleMap」を追加します。
+Movable Type 7のBlockEditor（ブロックエディタ）にフィールド「GoogleMap」を追加します。
 
 ## 使用法
 
@@ -15,4 +15,3 @@ JavaScriptを使用して表示する方法があります。
 ## 補足・制約事項
 
 - MT7 Beta2以上でご利用ください。
-- 自動保存への対応は調整中です。
