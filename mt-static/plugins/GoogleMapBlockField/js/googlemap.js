@@ -2,24 +2,22 @@
 
     // ひとまずheader.jsを基に作成
     var BEF = MT.BlockEditorField;
-    var label = trans('GoogleMap');
-
     BEF.GoogleMap = function () { BEF.apply(this, arguments) };
     $.extend(BEF.GoogleMap, {
         label: trans('GoogleMap'),
+        type: 'googlemap',
         create_button: function () {
-            return $('<button type="button" class="btn btn-contentblock"><svg title="' + label + '" role="img" class="mt-icon"><use xlink:href="' + StaticURI + 'plugins/GoogleMapBlockField/images/sprite.svg#ic_map"></use></svg>' + label + '</button>');
+            return $('<button type="button" class="btn btn-contentblock"><svg title="' + this.label + '" role="img" class="mt-icon"><use xlink:href="' + StaticURI + 'plugins/GoogleMapBlockField/images/sprite.svg#ic_map"></use></svg>' + this.label + '</button>');
         },
     });
     $.extend(BEF.GoogleMap.prototype, BEF.prototype, {
-        options: {},
         map: null,
         marker: null,
         get_id: function () {
             return this.id;
         },
         get_type: function () {
-            return 'googlemap';
+            return BEF.GoogleMap.type;
         },
         get_svg: function() {
             return '<svg title="' + this.get_type() + '" role="img" class="mt-icon mt-icon--sm"><use xlink:href="' + StaticURI + 'plugins/GoogleMapBlockField/images/sprite.svg#' + this.get_svg_name() + '" /></svg>';
@@ -77,39 +75,69 @@
                 }
             });
         },
-        create: function (id, data) {
+        create: function (id,data) {
             const self = this;
+            self.id = id;
+            self.data = data;
+
+            self.view_field = $('<div class="form-group"></div>');
             const $map = $('<div id="map_' + id + '" style="width: 400px; height: 300px;"></div>');
+            self.view_field.append($map);
+
+            $(window).one('field_created', function () {
+                self._mapInit($map, JSON.parse(self.data.value));
+            });
+
+            return self.view_field;
+        },
+        get_edit_field: function () {
+            const self = this;
             let json;
+            self.$edit_field = $('<div class="edit_field form-group"></div>');
 
             const fieldHTML = [
                 '<div class="row no-gutters py-2"><div class="col"></div>',
-                '<div id="' + id + '">',
-                '<div class="form-group"><label for="' + id + '_lat">緯度</label><input type="text" name="' + id + '_lat" id="' + id + '_lat" mt:watch-change="1" class="lat form-control" /></div>',
-                '<div class="form-group"><label for="' + id + '_lng">経度</label><input type="text" name="' + id + '_lng" id="' + id + '_lng" mt:watch-change="1" class="lng form-control" /></div>',
-                '<div class="form-group"><label for="' + id + '_zoom">ズームレベル</label><input type="text" name="' + id + '_zoom" id="' + id + '_zoom" mt:watch-change="1" class="zoom form-control" /></div>',
+                '<div id="' + this.id + '">',
+                '<div class="form-group"><label for="' + this.id + '_lat">緯度</label><input type="text" name="' + this.id + '_lat" id="' + this.id + '_lat" mt:watch-change="1" class="lat form-control" /></div>',
+                '<div class="form-group"><label for="' + this.id + '_lng">経度</label><input type="text" name="' + this.id + '_lng" id="' + this.id + '_lng" mt:watch-change="1" class="lng form-control" /></div>',
+                '<div class="form-group"><label for="' + this.id + '_zoom">ズームレベル</label><input type="text" name="' + this.id + '_zoom" id="' + this.id + '_zoom" mt:watch-change="1" class="zoom form-control" /></div>',
                 '</div>',
             ];
-            self.id = id;
-            self.edit_field = $(fieldHTML.join(''));
-            self.mapArea = $('<div class="form-group"></div>');
-            self.mapArea.append($map);
-            self.searchByAddress = $('<div class="form-group"><label for="' + id + '_address">ジオコーディング</label><input type="text" name="' + id + '_address" id="' + id + '_address" class="address form-control w-50 mb-2" /><input type="button" id="'+ id + '_address_search" value="住所から検索" /></div>');
+            const $field = $(fieldHTML.join(''));
+            const $map = $('<div id="map_' + this.id + '" style="width: 400px; height: 300px;"></div>');
+            const $mapArea = $('<div class="form-group"></div>');
+            $mapArea.append($map);
 
-            if (data.value) {
-                json = JSON.parse(data.value);
-                self.edit_field.find("#" + id + " input.lat").val(parseFloat(json.lat));
-                self.edit_field.find("#" + id + " input.lng").val(parseFloat(json.lng));
-                self.edit_field.find("#" + id + " input.zoom").val(parseInt(json.zoom));
+            const $searchByAddress = $('<div class="form-group"><label for="' + this.id + '_address">ジオコーディング</label><input type="text" name="' + this.id + '_address" id="' + this.id + '_address" class="address form-control w-50 mb-2" /><input type="button" id="'+ this.id + '_address_search" value="住所から検索" /></div>');
+
+            if (this.data.value) {
+                json = JSON.parse(this.data.value);
+                $field.find("#" + this.id + " input.lat").val(parseFloat(json.lat));
+                $field.find("#" + this.id + " input.lng").val(parseFloat(json.lng));
+                $field.find("#" + this.id + " input.zoom").val(parseInt(json.zoom));
             }
 
-            self.edit_field.find('.col').append(self.mapArea);
-            self.edit_field.find('.col').append(self.searchByAddress);
+            $field.find('.col').append($mapArea);
+            $field.find('.col').append($searchByAddress);
+            self.$edit_field.append($field);
 
             self._mapInit($map, json);
-            $(document).on('click', '#' + id + '_address_search', $.proxy(self._geocoder, self));
+            $(document).on('click', '#' + this.id + '_address_search', $.proxy(self._geocoder, self));
 
-            return self.edit_field;
+            return self.$edit_field;
+        },
+        save: function(){
+            const lat = this.$edit_field.find('input.lat').val();
+            const lng = this.$edit_field.find('input.lng').val();
+            const zoom = this.$edit_field.find('input.zoom').val();
+            const json = {
+                'lat': lat,
+                'lng': lng,
+                'zoom': zoom
+            };
+            const $map = this.view_field.find('#map_' + this.id);
+            this.data.value = JSON.stringify(json);
+            this._mapInit($map, json);
         },
         set_option: function (name, val) {
             const style_name = name.replace('field_option_', '');
