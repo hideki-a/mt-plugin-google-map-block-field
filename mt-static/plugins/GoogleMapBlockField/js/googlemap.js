@@ -148,17 +148,10 @@
             this.options[style_name] = val;
         },
         get_data: function () {
-            const self = this;
-            const id = self.id;
-            const json = {
-                'lat': $("#" + id + " input.lat").val(),
-                'lng': $("#" + id + " input.lng").val(),
-                'zoom': $("#" + id + " input.zoom").val()
-            };
             return {
-                'value': JSON.stringify(json),
-                'html': self.get_html(json),
-                'options': self.options,
+                'value': this.data.value,
+                'html': this.get_html(this.data.value),
+                'options': this.options,
             }
         },
         get_html: function (json) {
