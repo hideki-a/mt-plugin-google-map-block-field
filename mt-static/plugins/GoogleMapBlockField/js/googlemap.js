@@ -29,7 +29,7 @@
         get_icon: function() {
             return BEF.GoogleMap.get_svg();
         },
-        _mapInit: function ($map, json) {
+        _mapInit: function ($map, json, isDraggable) {
             const self = this;
             const id = self.id;
             let mappingPoint;
@@ -47,7 +47,7 @@
             self.marker = new google.maps.Marker({
                 position: mappingPoint,
                 map: self.map,
-                draggable: true,
+                draggable: !!isDraggable,
             });
 
             self.marker.addListener('dragend', function() {
@@ -89,7 +89,7 @@
             self.view_field.append($map);
 
             $(window).one('field_created', function () {
-                self._mapInit($map, JSON.parse(self.data.value));
+                self._mapInit($map, JSON.parse(self.data.value), 0);
             });
 
             return self.view_field;
@@ -125,7 +125,7 @@
             $field.find('.col').append($searchByAddress);
             self.$edit_field.append($field);
 
-            self._mapInit($map, json);
+            self._mapInit($map, json, 1);
             $(document).on('click', '#' + this.id + '_address_search', $.proxy(self._geocoder, self));
 
             return self.$edit_field;
