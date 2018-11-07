@@ -6,8 +6,12 @@
     $.extend(BEF.GoogleMap, {
         label: trans('GoogleMap'),
         type: 'googlemap',
+        svg_name: 'ic_map',
         create_button: function () {
             return $('<button type="button" class="btn btn-contentblock"><svg title="' + this.label + '" role="img" class="mt-icon"><use xlink:href="' + StaticURI + 'plugins/GoogleMapBlockField/images/sprite.svg#ic_map"></use></svg>' + this.label + '</button>');
+        },
+        get_svg: function() {
+            return '<svg title="' + this.type + '" role="img" class="mt-icon mt-icon--sm"><use xlink:href="' + StaticURI + 'plugins/GoogleMapBlockField/images/sprite.svg#' + this.svg_name + '" /></svg>';
         },
     });
     $.extend(BEF.GoogleMap.prototype, BEF.prototype, {
@@ -16,14 +20,14 @@
         get_id: function () {
             return this.id;
         },
+        get_label: function(){
+            return BEF.GoogleMap.label;
+        },
         get_type: function () {
             return BEF.GoogleMap.type;
         },
-        get_svg: function() {
-            return '<svg title="' + this.get_type() + '" role="img" class="mt-icon mt-icon--sm"><use xlink:href="' + StaticURI + 'plugins/GoogleMapBlockField/images/sprite.svg#' + this.get_svg_name() + '" /></svg>';
-        },
-        get_svg_name: function() {
-            return 'ic_map';
+        get_icon: function() {
+            return BEF.GoogleMap.get_svg();
         },
         _mapInit: function ($map, json) {
             const self = this;
