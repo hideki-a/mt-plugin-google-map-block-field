@@ -1,6 +1,4 @@
 ; (function ($) {
-
-    // ひとまずheader.jsを基に作成
     var BEF = MT.BlockEditorField;
     BEF.GoogleMap = function () { BEF.apply(this, arguments) };
     $.extend(BEF.GoogleMap, {
@@ -20,13 +18,13 @@
         get_id: function () {
             return this.id;
         },
-        get_label: function(){
+        get_label: function (){
             return BEF.GoogleMap.label;
         },
         get_type: function () {
             return BEF.GoogleMap.type;
         },
-        get_icon: function() {
+        get_icon: function () {
             return BEF.GoogleMap.get_svg();
         },
         _mapInit: function ($map, json, isDraggable) {
@@ -79,7 +77,7 @@
                 }
             });
         },
-        create: function (id,data) {
+        create: function (id, data) {
             const self = this;
             self.id = id;
             self.data = data;
@@ -130,7 +128,7 @@
 
             return self.$edit_field;
         },
-        save: function(){
+        save: function () {
             const lat = this.$edit_field.find('input.lat').val();
             const lng = this.$edit_field.find('input.lng').val();
             const zoom = this.$edit_field.find('input.zoom').val();
